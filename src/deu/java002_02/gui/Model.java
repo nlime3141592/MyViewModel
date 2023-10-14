@@ -1,15 +1,21 @@
 package deu.java002_02.gui;
 
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Vector;
 
-public class Model
+public abstract class Model
 {
-	private ArrayList<View> m_registeredViews;
+	/*
+	 *  NOTE:
+	 *  참조카운터 역할을 수행하는 View 벡터입니다.
+	 */
+	private boolean m_started;
+	private Vector<View> m_registeredViews;
 
-	public Model(View _view)
+	public Model()
 	{
-		m_registeredViews = new ArrayList<View>();
-		m_registeredViews.add(_view);
+		m_started = false;
+		m_registeredViews = new Vector<View>();
 	}
 
 	public void registerView(View _view)
@@ -17,9 +23,10 @@ public class Model
 		if(m_registeredViews.contains(_view))
 			return;
 		
+		m_started = true;
 		m_registeredViews.add(_view);
 	}
-	
+
 	public void unregisterView(View _view)
 	{
 		if(!m_registeredViews.contains(_view))
@@ -27,9 +34,17 @@ public class Model
 		
 		m_registeredViews.remove(_view);
 	}
-	
+
 	public int getViewCount()
 	{
-		return m_registeredViews.size();
+		if(m_started)
+			return m_registeredViews.size();
+		else
+			return -1;
+	}
+
+	public Iterator<View> getViewIterator()
+	{
+		return m_registeredViews.iterator();
 	}
 }

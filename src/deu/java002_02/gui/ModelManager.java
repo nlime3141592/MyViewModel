@@ -1,10 +1,13 @@
 package deu.java002_02.gui;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ModelManager
 {
 	private static ModelManager s_m_manager;
+	
+	private ConcurrentHashMap<String, Model> m_modelMap;
 	
 	public static ModelManager getInstance()
 	{
@@ -13,13 +16,16 @@ public class ModelManager
 		
 		return s_m_manager;
 	}
-	
+
 	private ModelManager()
 	{
-		m_modelMap = new HashMap<String, Model>();
+		m_modelMap = new ConcurrentHashMap<String, Model>();
 	}
 	
-	private HashMap<String, Model> m_modelMap;
+	public boolean hasModel(String _modelClassName)
+	{
+		return m_modelMap.containsKey(_modelClassName);
+	}
 
 	public Model getModel(String _modelClassName)
 	{
@@ -37,5 +43,15 @@ public class ModelManager
 
 		m_modelMap.put(_modelClassName, _model);
 		return true;
+	}
+
+	public void removeModel(Model _model)
+	{
+		String modelClassName = _model.getClass().getName();
+
+		if(!m_modelMap.containsKey(modelClassName))
+			return;
+
+		m_modelMap.remove(modelClassName);
 	}
 }
